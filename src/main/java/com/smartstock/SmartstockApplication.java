@@ -7,7 +7,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SmartstockApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SmartstockApplication.class, args);
-    }
+        System.out.println(
+                "DB_URL present: " +
+                        (System.getenv("DB_URL") != null &&
+                                !System.getenv("DB_URL").isBlank())
+        );
 
+        SpringApplication.run(
+                SmartstockApplication.class, args
+        );
+    }
 }
