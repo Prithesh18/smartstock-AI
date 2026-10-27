@@ -6,7 +6,7 @@ function Alerts() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch("http://localhost:8080/api/alerts/low-stock")
+        fetch("https://smartstock-backend-v853.onrender.com/api/alerts/low-stock")
             .then((response) => response.json())
             .then((data) => {
                 setAlerts(data);

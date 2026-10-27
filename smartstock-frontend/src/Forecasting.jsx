@@ -1,26 +1,40 @@
+
 import { useEffect, useState } from "react";
 
 function Forecasting() {
-
     const [forecast, setForecast] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     useEffect(() => {
-        fetch("http://localhost:8080/api/forecast/30-days")
-            .then((response) => response.json())
+        fetch("https://smartstock-backend-v853.onrender.com/api/forecast/30-days")
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error: ${response.status}`);
+                }
+                return response.json();
+            })
             .then((data) => {
-                setForecast(data);
-                setLoading(false);
+                console.log("Forecast API response:", data);
+
+                // Handle either an array or an object containing forecast data
+                const records = Array.isArray(data)
+                    ? data
+                    : data.forecasts ?? data.data ?? [];
+
+                setForecast(records);
             })
             .catch((error) => {
                 console.error("Forecast error:", error);
+                setError("Unable to load forecast data. Please try again.");
+            })
+            .finally(() => {
                 setLoading(false);
             });
     }, []);
 
     return (
         <div className="page">
-
             <div className="page-header">
                 <h2>Demand Forecasting</h2>
                 <p>
@@ -30,11 +44,13 @@ function Forecasting() {
 
             {loading ? (
                 <p>Loading forecast...</p>
+            ) : error ? (
+                <p>{error}</p>
+            ) : forecast.length === 0 ? (
+                <p>No forecast data available.</p>
             ) : (
                 <div className="table-card">
-
                     <table>
-
                         <thead>
                         <tr>
                             <th>Product ID</th>
@@ -50,56 +66,50 @@ function Forecasting() {
                         </thead>
 
                         <tbody>
-
-                        {forecast.map((item) => (
-
-                            <tr key={item.productId}>
-
-                                <td>{item.productId}</td>
-
+                        {forecast.map((item, index) => (
+                            <tr key={item.productId ?? index}>
+                                <td>{item.productId ?? "-"}</td>
                                 <td>
-                                    <strong>{item.productName}</strong>
+                                    <strong>
+                                        {item.productName ?? "-"}
+                                    </strong>
                                 </td>
-
                                 <td>
-                                    {item.averageDailyDemand.toFixed(2)}
+                                    {Number.isFinite(Number(item.averageDailyDemand))
+                                        ? Number(item.averageDailyDemand).toFixed(2)
+                                        : "-"}
                                 </td>
-
                                 <td>
-                                    {item.predicted30DayDemand.toFixed(2)}
+                                    {Number.isFinite(Number(item.predicted30DayDemand))
+                                        ? Number(item.predicted30DayDemand).toFixed(2)
+                                        : "-"}
                                 </td>
-
+                                <td>{item.currentStock ?? "-"}</td>
                                 <td>
-                                    {item.currentStock}
+                                    {item.mae != null &&
+                                    Number.isFinite(Number(item.mae))
+                                        ? Number(item.mae).toFixed(2)
+                                        : "-"}
                                 </td>
-
                                 <td>
-                                    {item.mae?.toFixed(2)}
+                                    {item.rmse != null &&
+                                    Number.isFinite(Number(item.rmse))
+                                        ? Number(item.rmse).toFixed(2)
+                                        : "-"}
                                 </td>
-
+                                <td>{item.demandTrend ?? "-"}</td>
                                 <td>
-                                    {item.rmse?.toFixed(2)}
+                                    {item.trendPercentage != null &&
+                                    Number.isFinite(Number(item.trendPercentage))
+                                        ? `${Number(item.trendPercentage).toFixed(1)}%`
+                                        : "-"}
                                 </td>
-
-                                <td>
-                                    {item.demandTrend}
-                                </td>
-
-                                <td>
-                                    {item.trendPercentage?.toFixed(1)}%
-                                </td>
-
                             </tr>
-
                         ))}
-
                         </tbody>
-
                     </table>
-
                 </div>
             )}
-
         </div>
     );
 }

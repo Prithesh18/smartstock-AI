@@ -50,7 +50,7 @@ function App() {
   );
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/forecast/30-days")
+    fetch("https://smartstock-backend-v853.onrender.com/api/forecast/30-days")
         .then((response) => {
           if (!response.ok) {
             throw new Error("Failed to fetch forecast data");

@@ -6,7 +6,7 @@ function Inventory() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch("http://localhost:8080/api/inventory/optimization")
+        fetch("https://smartstock-backend-v853.onrender.com/api/inventory/optimization")
             .then((response) => response.json())
             .then((data) => {
                 setInventory(data);

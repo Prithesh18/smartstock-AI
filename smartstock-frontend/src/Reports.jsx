@@ -2,7 +2,7 @@ function Reports() {
     const downloadReport = async () => {
         try {
             const response = await fetch(
-                "http://localhost:8080/api/reports/reorder"
+                "https://smartstock-backend-v853.onrender.com/api/reports/reorder"
             );
 
             if (!response.ok) {
