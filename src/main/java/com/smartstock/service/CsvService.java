@@ -1,4 +1,5 @@
 package com.smartstock.service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.smartstock.model.Sales;
 import com.smartstock.repository.SalesRepository;
@@ -189,14 +190,12 @@ public class CsvService {
                     "CSV file contains no data"
             );
         }
-
         // 4. Replace existing dataset
         salesRepository.deleteAll();
 
         salesRepository.saveAll(salesList);
 
         return salesList.size();
-
     }
     private LocalDate parseDate(String dateValue) {
 

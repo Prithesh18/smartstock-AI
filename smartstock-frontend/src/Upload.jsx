@@ -4,6 +4,7 @@ function Upload() {
     const [file, setFile] = useState(null);
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
+    const [isUploading, setIsUploading] = useState(false);
 
     const handleUpload = async () => {
 
@@ -20,9 +21,10 @@ function Upload() {
 
             setError("");
             setMessage("Uploading...");
+            setIsUploading(true);
 
             const response = await fetch(
-                "http://localhost:8080/api/csv/upload",
+                "https://smartstock-backend-v853.onrender.com/api/csv/upload",
                 {
                     method: "POST",
                     body: formData
@@ -51,6 +53,9 @@ function Upload() {
                 error.message || "Failed to upload CSV."
             );
         }
+        finally {
+            setIsUploading(false);
+        }
     };
 
     return (
@@ -74,6 +79,7 @@ function Upload() {
                 <input
                     type="file"
                     accept=".csv"
+                    disabled={isUploading}
                     onChange={(e) => {
                         setFile(e.target.files[0]);
                         setMessage("");
@@ -89,18 +95,19 @@ function Upload() {
 
                 <button
                     onClick={handleUpload}
+                    disabled={isUploading}
                     style={{
                         marginTop: "20px",
                         padding: "11px 20px",
                         border: "none",
                         borderRadius: "8px",
-                        cursor: "pointer",
-                        background: "#4f46e5",
+                        cursor: isUploading ? "not-allowed" : "pointer",
+                        background: isUploading ? "#9ca3af" : "#4f46e5",
                         color: "white",
                         fontWeight: "600",
                     }}
                 >
-                    Upload CSV
+                    {isUploading ? "Uploading..." : "Upload CSV"}
                 </button>
 
                 {message && (

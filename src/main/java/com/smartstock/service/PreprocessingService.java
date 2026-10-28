@@ -3,6 +3,7 @@ package com.smartstock.service;
 import com.smartstock.model.Sales;
 import com.smartstock.repository.SalesRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public class PreprocessingService {
     public PreprocessingService(SalesRepository salesRepository) {
         this.salesRepository = salesRepository;
     }
-
+    @Transactional
     public String preprocessData() {
 
         List<Sales> salesList =

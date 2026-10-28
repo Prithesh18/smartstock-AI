@@ -68,7 +68,7 @@ function App() {
         });
   }, []);
   useEffect(() => {
-    fetch("http://localhost:8080/api/inventory/optimization")
+    fetch("https://smartstock-backend-v853.onrender.com/api/inventory/optimization")
         .then((response) => {
           if (!response.ok) {
             throw new Error("Failed to fetch inventory data");
@@ -86,7 +86,7 @@ function App() {
         });
   }, []);
   useEffect(() => {
-    fetch("http://localhost:8080/api/alerts/low-stock")
+    fetch("https://smartstock-backend-v853.onrender.com/api/alerts/low-stock")
         .then((response) => {
           if (!response.ok) {
             throw new Error("Failed to fetch alert data");
@@ -383,7 +383,7 @@ function App() {
                 <button
                     onClick={() =>
                         window.open(
-                            "http://localhost:8080/api/reports/reorder",
+                            "http://smartstock-backend-v853.onrender.com/api/reports/reorder",
                             "_blank"
                         )
                     }

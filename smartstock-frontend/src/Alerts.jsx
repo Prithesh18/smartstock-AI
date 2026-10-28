@@ -20,7 +20,7 @@ function Alerts() {
     const sendEmailAlerts = async () => {
         try {
             const response = await fetch(
-                "http://localhost:8080/api/email/low-stock",
+                "https://smartstock-backend-v853.onrender.com/api/email/low-stock",
                 {
                     method: "POST",
                 }
