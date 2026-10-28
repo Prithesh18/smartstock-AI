@@ -41,10 +41,6 @@ function Upload() {
             console.log("CSV upload response:", result);
             setFile(null);
 
-            setTimeout(() => {
-                window.location.href = "/";
-            }, 1500);
-
         } catch (error) {
 
             console.error("Upload error:", error);
