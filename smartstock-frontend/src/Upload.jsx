@@ -38,6 +38,7 @@ function Upload() {
             }
 
             setMessage(result);
+            console.log("CSV upload response:", result);
             setFile(null);
 
             setTimeout(() => {
