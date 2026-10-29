@@ -8,7 +8,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/csv")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {
+        "http://localhost:5173",
+        "https://smartstock-n7m0kanh4-prithesh.vercel.app"
+})
 public class CsvController {
 
     private final CsvService csvService;

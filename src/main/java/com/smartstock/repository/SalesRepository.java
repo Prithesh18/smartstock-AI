@@ -15,6 +15,7 @@ public interface SalesRepository extends JpaRepository<Sales, Long> {
     List<Sales> findAllByOrderByProductIdAscDateAsc();
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Transactional
     @Query(value = "DELETE FROM sales", nativeQuery = true)
     void deleteAllSalesInBulk();
 }

@@ -27,7 +27,8 @@ public class CsvService {
         this.salesRepository = salesRepository;
     }
 
-    public int uploadCsv(MultipartFile file) throws Exception {
+    @Transactional(rollbackFor = Exception.class)
+    public int uploadCsv(MultipartFile file) throws Exception  {
 
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8)
@@ -191,9 +192,18 @@ public class CsvService {
             );
         }
         // 4. Replace existing dataset
-        salesRepository.deleteAll();
+        long start = System.currentTimeMillis();
 
+        salesRepository.deleteAllSalesInBulk();
+        System.out.println("Delete time: " +
+                (System.currentTimeMillis() - start) + " ms");
+
+        long saveStart = System.currentTimeMillis();
+
+        System.out.println("Starting to save " + salesList.size() + " records...");
         salesRepository.saveAll(salesList);
+        System.out.println("Save time: " +
+                (System.currentTimeMillis() - saveStart) + " ms");
 
         return salesList.size();
     }
