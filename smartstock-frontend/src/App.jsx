@@ -383,7 +383,7 @@ function App() {
                 <button
                     onClick={() =>
                         window.open(
-                            "http://smartstock-backend-v853.onrender.com/api/reports/reorder",
+                            "https://smartstock-backend-v853.onrender.com/api/reports/reorder",
                             "_blank"
                         )
                     }
