@@ -10,8 +10,10 @@ import java.util.List;
 @RequestMapping("/api/forecast")
 @CrossOrigin(origins = {
         "http://localhost:5173",
-        "https://smartstock-n7m0kanh4-prithesh.vercel.app"
+        "https://smartstock-n7m0kanh4-prithesh.vercel.app",
+        "https://smartstock-ai-five.vercel.app"
 })
+
 public class ForecastController {
 
     private final ForecastService forecastingService;

@@ -11,10 +11,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/alerts")
+
 @CrossOrigin(origins = {
         "http://localhost:5173",
-        "https://smartstock-n7m0kanh4-prithesh.vercel.app"
+        "https://smartstock-n7m0kanh4-prithesh.vercel.app",
+        "https://smartstock-ai-five.vercel.app"
 })
+
 public class LowStockAlertController {
 
     private final LowStockAlertService lowStockAlertService;

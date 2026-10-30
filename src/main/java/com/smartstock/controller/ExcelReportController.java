@@ -14,10 +14,13 @@ import java.io.File;
 
 @RestController
 @RequestMapping("/api/reports")
+
 @CrossOrigin(origins = {
         "http://localhost:5173",
-        "https://smartstock-n7m0kanh4-prithesh.vercel.app"
+        "https://smartstock-n7m0kanh4-prithesh.vercel.app",
+        "https://smartstock-ai-five.vercel.app"
 })
+
 public class ExcelReportController {
 
     private final ExcelReportService excelReportService;

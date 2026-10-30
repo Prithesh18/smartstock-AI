@@ -8,10 +8,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/inventory")
+
 @CrossOrigin(origins = {
         "http://localhost:5173",
-        "https://smartstock-n7m0kanh4-prithesh.vercel.app"
+        "https://smartstock-n7m0kanh4-prithesh.vercel.app",
+        "https://smartstock-ai-five.vercel.app"
 })
+
 public class InventoryOptimizationController {
 
     private final InventoryOptimizationService inventoryOptimizationService;

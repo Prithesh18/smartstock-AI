@@ -17,8 +17,10 @@ public class CorsConfig {
                 registry.addMapping("/api/**")
                         .allowedOrigins(
                                 "http://localhost:5173",
-                                "https://smartstock-n7m0kanh4-prithesh.vercel.app"
+                                "https://smartstock-n7m0kanh4-prithesh.vercel.app",
+                                "https://smartstock-ai-five.vercel.app"
                         )
+
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*");
             }
