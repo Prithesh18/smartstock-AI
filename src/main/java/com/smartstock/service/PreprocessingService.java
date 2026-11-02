@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Comparator;
 
 @Service
 public class PreprocessingService {
@@ -23,101 +23,60 @@ public class PreprocessingService {
         List<Sales> salesList =
                 salesRepository.findAllByOrderByProductIdAscDateAsc();
 
-        for (int i = 0; i < salesList.size(); i++) {
-
-            Sales current = salesList.get(i);
-
-            // -------------------------
-            // Date Features
-            // -------------------------
-
-            current.setYear(current.getDate().getYear());
-
-            current.setMonth(current.getDate().getMonthValue());
-
-            current.setDay(current.getDate().getDayOfMonth());
-
-            current.setDayOfWeek(
-                    current.getDate().getDayOfWeek().getValue()
-            );
-
-            // -------------------------
-            // Weekend
-            // -------------------------
-
-            DayOfWeek dayOfWeek =
-                    current.getDate().getDayOfWeek();
-
-            current.setIsWeekend(
-                    dayOfWeek == DayOfWeek.SATURDAY ||
-                            dayOfWeek == DayOfWeek.SUNDAY
-            );
-
-            // -------------------------
-            // Lag 1
-            // -------------------------
-
-            if (i > 0 &&
-                    sameProduct(current, salesList.get(i - 1))) {
-
-                current.setSalesLag1(
-                        salesList.get(i - 1).getSalesQuantity()
-                );
-
-            } else {
-
-                current.setSalesLag1(null);
-            }
-
-            // -------------------------
-            // Lag 7
-            // -------------------------
-
-            if (i >= 7 &&
-                    sameProduct(current, salesList.get(i - 7))) {
-
-                current.setSalesLag7(
-                        salesList.get(i - 7).getSalesQuantity()
-                );
-
-            } else {
-
-                current.setSalesLag7(null);
-            }
-
-            // -------------------------
-            // Rolling 7-Day Average
-            // -------------------------
-
-            current.setSalesRolling7Mean(
-                    calculateRollingAverage(
-                            salesList,
-                            i,
-                            7,
-                            current
-                    )
-            );
-
-            // -------------------------
-            // Rolling 30-Day Average
-            // -------------------------
-
-            current.setSalesRolling30Mean(
-                    calculateRollingAverage(
-                            salesList,
-                            i,
-                            30,
-                            current
-                    )
-            );
-        }
-
+        preprocessSales(salesList);
         salesRepository.saveAll(salesList);
 
         return salesList.size() +
                 " sales records preprocessed successfully";
     }
 
+    /**
+     * Preprocesses records already loaded in memory. CSV upload uses this
+     * before its single database save, avoiding a read-and-save cycle.
+     */
+    public void preprocessSales(List<Sales> salesList) {
+
+        salesList.sort(
+                Comparator.comparing(Sales::getProductId)
+                        .thenComparing(Sales::getDate)
+        );
+
+        for (int i = 0; i < salesList.size(); i++) {
+
+            Sales current = salesList.get(i);
+
+            current.setYear(current.getDate().getYear());
+            current.setMonth(current.getDate().getMonthValue());
+            current.setDay(current.getDate().getDayOfMonth());
+            current.setDayOfWeek(current.getDate().getDayOfWeek().getValue());
+
+            DayOfWeek dayOfWeek = current.getDate().getDayOfWeek();
+            current.setIsWeekend(
+                    dayOfWeek == DayOfWeek.SATURDAY ||
+                            dayOfWeek == DayOfWeek.SUNDAY
+            );
+
+            if (i > 0 && sameProduct(current, salesList.get(i - 1))) {
+                current.setSalesLag1(salesList.get(i - 1).getSalesQuantity());
+            } else {
+                current.setSalesLag1(null);
+            }
+
+            if (i >= 7 && sameProduct(current, salesList.get(i - 7))) {
+                current.setSalesLag7(salesList.get(i - 7).getSalesQuantity());
+            } else {
+                current.setSalesLag7(null);
+            }
+
+            current.setSalesRolling7Mean(
+                    calculateRollingAverage(salesList, i, 7, current)
+            );
+
+            current.setSalesRolling30Mean(
+                    calculateRollingAverage(salesList, i, 30, current)
+            );
+        }
+    }
 
     // Check whether two records belong to the same product
     private boolean sameProduct(Sales a, Sales b) {

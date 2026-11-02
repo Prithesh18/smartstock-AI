@@ -1,31 +1,18 @@
 package com.smartstock.controller;
 
 import com.smartstock.service.CsvService;
-import com.smartstock.service.PreprocessingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/csv")
-
-@CrossOrigin(origins = {
-        "http://localhost:5173",
-        "https://smartstock-n7m0kanh4-prithesh.vercel.app",
-        "https://smartstock-ai-five.vercel.app"
-})
-
+@CrossOrigin(origins = "http://localhost:5173")
 public class CsvController {
 
     private final CsvService csvService;
-    private final PreprocessingService preprocessingService;
-
-    public CsvController(
-            CsvService csvService,
-            PreprocessingService preprocessingService) {
-
+    public CsvController(CsvService csvService) {
         this.csvService = csvService;
-        this.preprocessingService = preprocessingService;
     }
 
     @PostMapping("/upload")
@@ -53,14 +40,8 @@ public class CsvController {
             // Upload CSV into MySQL
             int count = csvService.uploadCsv(file);
 
-            // Automatically preprocess uploaded data
-            String preprocessingResult =
-                    preprocessingService.preprocessData();
-
             return ResponseEntity.ok(
-                    count +
-                            " sales records uploaded successfully. " +
-                            preprocessingResult
+                    count + " sales records uploaded and preprocessed successfully"
             );
 
         } catch (Exception e) {
